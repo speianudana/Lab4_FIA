@@ -13,9 +13,7 @@ def predict():
                'median_complex_value']
 
     dataset = pandas.read_csv(path, names=columns)
-    data_table = dataset.describe()
 
-    dataset.corr()
     x = dataset[
         ['1', '2', 'complex_age', 'total_rooms', 'total_bedrooms', 'complex_inhabitants', 'apartments_nr', '8']]
 
@@ -29,7 +27,7 @@ def predict():
     actual_price = y_test[0]
     predicted_price = training.predict([x_test.iloc[0]])[0]
 
-    return training_score, testing_score, actual_price, predicted_price, data_table, path
+    return training_score, testing_score, actual_price, predicted_price, path
 
 
 @app.route("/")
