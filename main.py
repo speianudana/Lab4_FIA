@@ -32,7 +32,7 @@ def predict():
 
 @app.route("/")
 def index():
-    return json.dumps({"Dataset": predict()[5]}, sort_keys=True)
+    return json.dumps({"Dataset": predict()[4]}, sort_keys=True)
 
 
 @app.route("/modelScore")
