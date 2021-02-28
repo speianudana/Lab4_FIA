@@ -2,6 +2,7 @@ from flask import Flask
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 import pandas
+import json
 
 app = Flask(__name__)
 
@@ -12,7 +13,7 @@ def predict():
                'median_complex_value']
 
     dataset = pandas.read_csv(path, names=columns)
-    dataset.describe()
+    data_table = dataset.describe()
 
     dataset.corr()
     x = dataset[
@@ -28,18 +29,24 @@ def predict():
     actual_price = y_test[0]
     predicted_price = training.predict([x_test.iloc[0]])[0]
 
-    return training_score, testing_score, actual_price, predicted_price
+    return training_score, testing_score, actual_price, predicted_price, data_table, path
 
 
 @app.route("/")
 def index():
-    prediction = predict()[0]
-    return "Prediction: {}" + format(prediction)
+    return json.dumps({"Dataset": predict()[5]}, sort_keys=True)
 
 
-# @app.route('/predict')
-# def hello_name():
-#     return predict()[0]
+@app.route("/modelScore")
+def model_score():
+    predict_result = predict()
+    return json.dumps({"training_score": predict_result[0], "testing_score": predict_result[1]}, sort_keys=True)
+
+
+@app.route('/predict')
+def price_prediction():
+    predict_result = predict()
+    return json.dumps({"predicted_price": predict_result[2], "actual_price": predict_result[3]}, sort_keys=True)
 
 
 if __name__ == '__main__':
